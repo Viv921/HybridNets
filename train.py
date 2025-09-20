@@ -215,7 +215,7 @@ def train(opt):
         # scaler.load_state_dict(ckpt['scaler'])
         # optimizer.load_state_dict(ckpt['optimizer'])
 
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, verbose=True)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3)
 
     epoch = 0
     best_loss = 1e5
