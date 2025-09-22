@@ -38,9 +38,15 @@ args = parser.parse_args()
 
 params = Params(f'projects/{args.project}.yml')
 color_list_seg = {}
+# Set specific colors for road (purple) and lane (yellow) in BGR format
 for seg_class in params.seg_list:
-    # edit your color here if you wanna fix to your liking
-    color_list_seg[seg_class] = list(np.random.choice(range(256), size=3))
+    if seg_class == 'road':
+        color_list_seg[seg_class] = [128, 0, 128]  # Purple in BGR
+    elif seg_class == 'lane':
+        color_list_seg[seg_class] = [0, 255, 255]  # Yellow in BGR (B=0, G=255, R=255)
+    else:
+        # For any other classes, use a default color or random
+        color_list_seg[seg_class] = [0, 0, 0]  # Black in BGR
 compound_coef = args.compound_coef
 source = args.source
 if source.endswith("/"):
@@ -54,6 +60,8 @@ img_path = glob(f'{source}/*.jpg') + glob(f'{source}/*.png')
 input_imgs = []
 shapes = []
 det_only_imgs = []
+# Get base filenames without extension for output naming
+base_names = [os.path.splitext(os.path.basename(p))[0] for p in img_path]
 
 anchors_ratios = params.anchors_ratios
 anchors_scales = params.anchors_scales
@@ -92,12 +100,13 @@ transform = transforms.Compose([
 ])
 for ori_img in ori_imgs:
     h0, w0 = ori_img.shape[:2]  # orig hw
-    r = resized_shape / max(h0, w0)  # resize image to img_size
-    input_img = cv2.resize(ori_img, (int(w0 * r), int(h0 * r)), interpolation=cv2.INTER_AREA)
+    # Force resize to the exact target shape
+    input_img = cv2.resize(ori_img, (640, 384), interpolation=cv2.INTER_AREA)
     h, w = input_img.shape[:2]
 
-    (input_img, _), ratio, pad = letterbox((input_img, None), resized_shape, auto=True,
-                                              scaleup=False)
+    # No need for letterbox since we're forcing exact dimensions
+    ratio = (h / h0, w / w0)
+    pad = (0, 0)
 
     input_imgs.append(input_img)
     # cv2.imwrite('input.jpg', input_img * 255)
@@ -174,8 +183,8 @@ with torch.no_grad():
             seg_img = ori_imgs[i].copy() if seg_mode == MULTILABEL_MODE else ori_imgs[i]  # do not work on original images if MULTILABEL_MODE
             seg_img[color_mask != 0] = seg_img[color_mask != 0] * 0.5 + color_seg[color_mask != 0] * 0.5
             seg_img = seg_img.astype(np.uint8)
-            seg_filename = f'{output}/{i}_{params.seg_list[seg_class_index]}_seg.jpg' if seg_mode == MULTILABEL_MODE else \
-                           f'{output}/{i}_seg.jpg'
+            seg_filename = f'{output}/{base_names[i]}_{params.seg_list[seg_class_index]}_seg.jpg' if seg_mode == MULTILABEL_MODE else \
+                           f'{output}/{base_names[i]}_seg.jpg'
             if show_seg or seg_mode == MULTILABEL_MODE:
                 cv2.imwrite(seg_filename, cv2.cvtColor(seg_img, cv2.COLOR_RGB2BGR))
 
@@ -199,14 +208,14 @@ with torch.no_grad():
                              color=color_list[get_index_label(obj, obj_list)])
 
         if show_det:
-            cv2.imwrite(f'{output}/{i}_det.jpg',  cv2.cvtColor(det_only_imgs[i], cv2.COLOR_RGB2BGR))
+            cv2.imwrite(f'{output}/{base_names[i]}_det.jpg',  cv2.cvtColor(det_only_imgs[i], cv2.COLOR_RGB2BGR))
 
         if imshow:
             cv2.imshow('img', ori_imgs[i])
             cv2.waitKey(0)
 
         if imwrite:
-            cv2.imwrite(f'{output}/{i}.jpg', cv2.cvtColor(ori_imgs[i], cv2.COLOR_RGB2BGR))
+            cv2.imwrite(f'{output}/{base_names[i]}.jpg', cv2.cvtColor(ori_imgs[i], cv2.COLOR_RGB2BGR))
 
 if not args.speed_test:
     exit(0)
