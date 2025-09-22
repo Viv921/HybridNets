@@ -81,7 +81,7 @@ class BddDataset(Dataset):
             image_path = label_path.replace(str(self.label_root), str(self.img_root)).replace(".json", ".jpg")
             seg_path = {}
             for i in range(len(self.seg_list)):
-                seg_path[self.seg_list[i]] = label_path.replace(str(self.label_root), str(self.seg_root[i])).replace(".json", ".png")
+                seg_path[self.seg_list[i]] = label_path.replace(str(self.label_root), str(self.seg_root[i])).replace(".json", ".jpg")
                 # seg_path[self.seg_list[i]] = cv2.imread(label_path.replace(str(self.label_root), str(self.seg_root[i])).replace(".json", ".png"), 0)
             with open(label_path, 'r') as f:
                 label = json.load(f)
@@ -328,7 +328,7 @@ class BddDataset(Dataset):
             labels_app[:, 4] = labels[:, 0]
 
         img = np.ascontiguousarray(img)
-        
+        segmentation = torch.zeros(img.shape[:2])
         if self.seg_mode == BINARY_MODE:
             for seg_class in seg_label:
                 # technically, the for-loop only goes once
