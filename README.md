@@ -1,6 +1,6 @@
-Use `segmentation_script.py` in scripts to create road and lane segmentations for a dataset that does not have them. Requires the pretrained weights which can be found [here](https://github.com/datvuthanh/HybridNets/releases/tag/v1.0)
+Use `segmentation_script.py` in scripts to create road and lane segmentation annotations for a dataset that does not have them. Requires the pretrained weights which can be found [here](https://github.com/datvuthanh/HybridNets/releases/tag/v1.0)
 
-Use `yolo_to_bdd annotations.py` script to convert annotations in yolo standard to bdd standard.
+Use `yolo_to_bdd annotations.py` script to convert bbox annotations in yolo standard to bdd standard.
 
 ---
 
