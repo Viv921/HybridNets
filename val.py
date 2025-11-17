@@ -278,7 +278,7 @@ if __name__ == "__main__":
     ap.add_argument('-c', '--compound_coef', type=int, default=3, help='Coefficients of efficientnet backbone')
     ap.add_argument('-w', '--weights', type=str, default='weights/hybridnets.pth', help='/path/to/weights')
     ap.add_argument('-n', '--num_workers', type=int, default=12, help='Num_workers of dataloader')
-    ap.add_argument('--batch_size', type=int, default=12, help='The number of images per batch among all devices')
+    ap.add_argument('-b', '--batch_size', type=int, default=12, help='The number of images per batch among all devices')
     ap.add_argument('-v', '--verbose', type=boolean_string, default=True,
                     help='Whether to print results per class when valing')
     ap.add_argument('--cal_map', type=boolean_string, default=True,
@@ -329,9 +329,9 @@ if __name__ == "__main__":
                                seg_mode=seg_mode)
     
     try:
-        model.load_state_dict(torch.load(weights_path))
+        model.load_state_dict(torch.load(weights_path, weights_only=False)['model'])
     except:
-        model.load_state_dict(torch.load(weights_path)['model'])
+        model.load_state_dict(torch.load(weights_path, weights_only=False))
     model = ModelWithLoss(model, debug=False)
     model.requires_grad_(False)
 

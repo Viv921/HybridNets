@@ -165,7 +165,7 @@ def train(opt):
         #     last_step = 0
 
         try:
-            ckpt = torch.load(weights_path)
+            ckpt = torch.load(weights_path, weights_only=False)
             # new_weight = OrderedDict((k[6:], v) for k, v in ckpt['model'].items())
             model.load_state_dict(ckpt.get('model', ckpt), strict=False)
         except RuntimeError as e:
