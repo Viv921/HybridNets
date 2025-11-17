@@ -36,18 +36,27 @@ class BddDataset(Dataset):
         label_root = Path(params.dataset['labelroot'])
         seg_root = params.dataset['segroot']
         self.seg_list = params.seg_list
+        ######################################################
         if is_train:
-            indicator = params.dataset['train_set']
+            self.set_name = 'train'
         else:
-            indicator = params.dataset['test_set']
-        self.img_root = img_root / indicator
-        self.label_root = label_root / indicator
+            self.set_name = 'val'
+        self.img_root = img_root / self.set_name / 'images'
+        self.label_root = label_root / self.set_name / 'label_json'
         self.label_list = list(self.label_root.iterdir())
         if debug:
             self.label_list = self.label_list[:50]
         self.seg_root = []
-        for root in seg_root:
-            self.seg_root.append(Path(root) / indicator)
+        for i, root in enumerate(seg_root):
+            seg_class_name = self.seg_list[i]
+            if seg_class_name == 'road':
+                mask_folder = 'roads'
+            elif seg_class_name == 'lane':
+                mask_folder = 'lanes'
+            else:
+                mask_folder = seg_class_name        
+            self.seg_root.append(Path(root) / self.set_name / mask_folder)
+            ###########################################################################3#
         self.albumentations_transform = A.Compose([
             A.Blur(p=0.01),
             A.MedianBlur(p=0.01),
@@ -78,7 +87,7 @@ class BddDataset(Dataset):
         height, width = self.shapes
         for label in tqdm(self.label_list, ascii=True):
             label_path = str(label)
-            image_path = label_path.replace(str(self.label_root), str(self.img_root)).replace(".json", ".jpg")
+            image_path = label_path.replace(str(self.label_root), str(self.img_root)).replace(".json", ".png")
             seg_path = {}
             for i in range(len(self.seg_list)):
                 seg_path[self.seg_list[i]] = label_path.replace(str(self.label_root), str(self.seg_root[i])).replace(".json", ".jpg")
