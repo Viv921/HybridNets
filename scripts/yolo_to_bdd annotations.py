@@ -20,16 +20,15 @@ IMAGE_EXTENSION = ".jpg"
 #    You MUST update this dictionary to map your class numbers (from the .txt files)
 #    to the corresponding category names.
 CLASS_MAPPING = {
-    1: "person",
-    2: "object1",
-    3: "car",
-    4: "motorcycle",
-    5: "truck",
-    6: "bycycle",
-    7: "bus",
-    8: "object2",
-    9: "object3"
-    # Add all your class mappings here...
+    0: "car",                # CONFIRMED
+    1: "truck",              # CONFIRMED
+    2: "bus",                # CONFIRMED 
+    3: "object1",                # UNCONFIRMED (Not in data)
+    4: "traffic light",      # CONFIRMED
+    5: "person/bicycle",     # CONFIRMED (Groups people and bicycles)
+    6: "roadside object",            # GUESS (Based on contradictory data)
+    7: "motorcycle",         # CONFIRMED
+    8: "object2",                # UNCONFIRMED (Not in data)
 }
 
 
