@@ -15,8 +15,8 @@ anchors_ratios: '[(0.62, 1.58), (1.0, 1.0), (1.58, 0.62)]'
 
 # BDD100K officially supports 10 classes
 # obj_list: ['person', 'rider', 'car', 'truck', 'bus', 'train', 'motorcycle', 'bicycle', 'traffic light', 'traffic sign']
-obj_list: ['car']
-obj_combine: ['car', 'bus', 'truck', 'train']  # if single class, combine these classes into 1 single class in obj_list
+obj_list: ['car', 'truck', 'bus', 'object1', 'traffic light', 'person/bicycle', 'roadside object', 'motorcycle', 'object2']
+obj_combine: ['car', 'truck', 'bus', 'motorcycle']  # if single class, combine these classes into 1 single class in obj_list
                                                # leave as empty list ([]) to not combine classes
 
 
@@ -30,14 +30,16 @@ seg_list: ['road',
 seg_multilabel: false  # a pixel can belong to multiple labels (i.e. lane line + underlying road)
 
 dataset:
-  dataroot: ./datasets/bdd100k
-  labelroot: ./datasets/data2/zwt/bdd/bdd100k/labels/100k
+  #dataroot: ./datasets/bdd100k
+  dataroot: /data/srijan/navjot-rm/datasets_ta/leftimg
+  #labelroot: ./datasets/data2/zwt/bdd/bdd100k/labels/100k
+  labelroot: /data/srijan/navjot-rm/datasets_ta/leftimg
   segroot:
   # must be in correct order with seg_list
-  - ./datasets/bdd_seg_gt
-  - ./datasets/bdd_lane_gt
-  test_set: val
-  train_set: train
+  - /data/srijan/navjot-rm/datasets_ta/leftimg
+  - /data/srijan/navjot-rm/datasets_ta/leftimg
+  test_set: ''
+  train_set: ''
   org_img_size:
   - 720
   - 1280
