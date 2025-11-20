@@ -1,0 +1,3 @@
+[submodule "utility_scripts"]
+	path = utility_scripts
+	url = https://github.com/RickyTheDude/BDD100K-segregate-by-timeofday.git
