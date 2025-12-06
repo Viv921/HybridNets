@@ -1,3 +1,6 @@
 [submodule "utility_scripts"]
 	path = utility_scripts
 	url = https://github.com/RickyTheDude/BDD100K-segregate-by-timeofday.git
+[submodule "data-cleaning"]
+	path = data-cleaning
+	url = https://github.com/Niketw/data-cleaning.git
